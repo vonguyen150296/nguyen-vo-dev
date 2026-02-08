@@ -20,8 +20,8 @@ export const siteConfig = {
 
   // CV/Resume
   cv: {
-    downloadUrl: '/cv/nguyen-vo-cv.pdf', // Place your CV in public/cv/ folder
-    filename: 'Nguyen_Vo_CV.pdf',
+    downloadUrl: '/cv/Nguyen Vo - Frontend Developer CV.pdf', // Place your CV in public/cv/ folder
+    filename: 'Nguyen Vo - Frontend Developer CV.pdf',
   },
 
   // Site Metadata
