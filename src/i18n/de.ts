@@ -18,7 +18,7 @@ export const de: Translation = {
   },
   video: {
     title: 'Lernen Sie den Entwickler kennen',
-    placeholder: 'Vorstellungsvideo-Platzhalter',
+    placeholder: 'Klicken zum Abspielen',
   },
   experience: {
     title: 'Wirkungsorientierte Erfahrung',

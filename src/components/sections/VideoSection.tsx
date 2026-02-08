@@ -1,92 +1,209 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { useApp } from '@/lib/context';
+import { useAudioSync } from '@/components/video/useAudioSync';
+import { TalkingAvatar } from '@/components/video/TalkingAvatar';
+import { HighlightedText } from '@/components/video/HighlightedText';
+import { subtitles, getCurrentSubtitle } from '@/components/video/subtitles-data';
 
+/**
+ * VideoSection Component
+ * 
+ * Features:
+ * - Responsive: 16:9 on desktop, 9:16 on mobile
+ * - Background image
+ * - Talking avatar with lip-sync animation
+ * - Word-by-word highlighted subtitles synced to audio
+ * - Play/pause controls
+ */
 export function VideoSection() {
   const { t, mounted } = useApp();
+  const [hasStarted, setHasStarted] = useState(false);
 
+  const {
+    currentTime,
+    duration,
+    isPlaying,
+    isLoaded,
+    toggle,
+    seek,
+  } = useAudioSync({ src: '/intro.m4a', autoplay: false });
+
+  // Get current subtitle based on audio time
+  const currentSubtitle = useMemo(() => {
+    return getCurrentSubtitle(currentTime);
+  }, [currentTime]);
+
+  // Check if avatar should be "speaking" (has active subtitle)
+  const isSpeaking = currentSubtitle !== null && isPlaying;
+
+  // Handle play/pause
+  const handleToggle = useCallback(async () => {
+    if (!hasStarted) {
+      setHasStarted(true);
+    }
+    await toggle();
+  }, [hasStarted, toggle]);
+
+  // Format time display
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Progress percentage
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Loading skeleton
   if (!mounted) {
     return (
-      <section style={{ padding: '80px 0', background: 'var(--bg-secondary)' }}>
+      <section className="video-section">
         <div className="container">
-          <div style={{ height: 24, width: 192, margin: '0 auto 32px', background: 'var(--bg-tertiary)', borderRadius: 4 }} className="animate-pulse" />
-          <div style={{ aspectRatio: '16/9', background: 'var(--bg-tertiary)', borderRadius: 16 }} className="animate-pulse" />
+          <div className="video-section-skeleton">
+            <div className="skeleton-title animate-pulse" />
+            <div className="skeleton-video animate-pulse" />
+          </div>
         </div>
       </section>
     );
   }
 
   return (
-    <section style={{ padding: '80px 0', background: 'var(--bg-secondary)' }}>
+    <section className="video-section" id="video">
       <div className="container">
-        <motion.h3
+        {/* Section Header */}
+        <motion.div
+          className="video-section-header"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          style={{
-            textAlign: 'center',
-            fontFamily: "'Epilogue', -apple-system, system-ui, sans-serif",
-            fontSize: 14,
-            fontWeight: 600,
-            color: 'var(--accent-primary)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            marginBottom: 32,
-          }}
         >
-          {t.video.title}
-        </motion.h3>
+          <span className="video-section-label">{t.video.title}</span>
+        </motion.div>
 
+        {/* Video Container - Responsive aspect ratio */}
         <motion.div
+          className="video-player-container"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            position: 'relative',
-            borderRadius: 16,
-            overflow: 'hidden',
-            aspectRatio: '16/9',
-            background: 'var(--bg-tertiary)',
-            boxShadow: '0 20px 60px var(--shadow)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
         >
-          <div style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            gap: 16,
-            color: 'var(--text-tertiary)',
-          }}>
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                background: 'rgba(59, 130, 246, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <svg width={40} height={40} fill="none" stroke="var(--accent-primary)" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" strokeWidth="2" />
-                <polygon points="10,8 16,12 10,16" fill="var(--accent-primary)" />
-              </svg>
-            </motion.div>
-            <span style={{ fontSize: 14 }}>{t.video.placeholder}</span>
+          {/* Background Image */}
+          <div className="video-bg-image">
+            <Image
+              src="/background.png"
+              alt="Background"
+              fill
+              className="video-bg-img"
+              priority
+              sizes="(max-width: 768px) 100vw, 1200px"
+            />
+            <div className="video-bg-overlay" />
           </div>
+
+          {/* Title Badge */}
+          <motion.div
+            className="video-title-badge"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <span className="video-title-text">Senior Frontend Engineer</span>
+          </motion.div>
+
+          {/* Talking Avatar */}
+          <div className="video-avatar-area">
+            <TalkingAvatar
+              src="/avatar.png"
+              alt="Nguyen Vo"
+              isPlaying={isPlaying}
+              isSpeaking={isSpeaking}
+            />
+          </div>
+
+          {/* Highlighted Subtitles */}
+          <div className="video-subtitle-area">
+            <HighlightedText
+              subtitle={currentSubtitle}
+              currentTime={currentTime}
+            />
+          </div>
+
+          {/* Play/Pause Overlay */}
+          <AnimatePresence>
+            {(!hasStarted || !isPlaying) && isLoaded && (
+              <motion.button
+                className="video-play-overlay"
+                onClick={handleToggle}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+              >
+                <motion.div
+                  className="video-play-button"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="video-play-icon"
+                  >
+                    {isPlaying ? (
+                      <>
+                        <rect x="6" y="4" width="4" height="16" rx="1" />
+                        <rect x="14" y="4" width="4" height="16" rx="1" />
+                      </>
+                    ) : (
+                      <path d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z" />
+                    )}
+                  </svg>
+                </motion.div>
+              </motion.button>
+            )}
+          </AnimatePresence>
+
+          {/* Click to pause when playing */}
+          {hasStarted && isPlaying && (
+            <button
+              className="video-click-to-pause"
+              onClick={handleToggle}
+              aria-label="Pause"
+            />
+          )}
+
+          {/* Progress Bar */}
+          {hasStarted && (
+            <div className="video-controls">
+              <div className="video-progress-track">
+                <motion.div
+                  className="video-progress-fill"
+                  style={{ width: `${progress}%` }}
+                  transition={{ duration: 0.1 }}
+                />
+                <input
+                  type="range"
+                  className="video-progress-slider"
+                  min="0"
+                  max={duration}
+                  value={currentTime}
+                  onChange={(e) => seek(parseFloat(e.target.value))}
+                  aria-label="Seek"
+                />
+              </div>
+              <div className="video-time-display">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </div>
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

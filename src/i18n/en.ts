@@ -18,7 +18,7 @@ export const en: Translation = {
   },
   video: {
     title: 'Meet the Developer',
-    placeholder: 'Introduction Video Placeholder',
+    placeholder: 'Click to Play',
   },
   experience: {
     title: 'Impact-Driven Experience',
