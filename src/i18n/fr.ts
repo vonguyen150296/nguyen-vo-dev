@@ -15,6 +15,7 @@ export const fr: Translation = {
       "Spécialisé dans l'optimisation des performances, les design systems et la création d'expériences utilisateur fluides pour les équipes internationales",
     ctaProjects: "Voir l'expérience",
     ctaCV: 'Télécharger CV',
+    ctaCall: 'Appelez-moi',
   },
   video: {
     title: 'Rencontrez le développeur',

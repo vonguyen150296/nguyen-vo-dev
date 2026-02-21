@@ -45,6 +45,7 @@ export interface Translation {
     subheadline: string;
     ctaProjects: string;
     ctaCV: string;
+    ctaCall: string;
   };
   // Video Section
   video: {

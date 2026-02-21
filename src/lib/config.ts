@@ -14,14 +14,15 @@ export const siteConfig = {
   // Contact Information
   contact: {
     email: 'nguyen.vo@outlook.com',
+    phone: '017656017425',
     linkedin: 'https://www.linkedin.com/in/nguyen-vo-150296/',
     github: 'https://github.com/vonguyen150296',
   },
 
   // CV/Resume
   cv: {
-    downloadUrl: '/cv/Nguyen Vo - Frontend Developer CV.pdf', // Place your CV in public/cv/ folder
-    filename: 'Nguyen Vo - Frontend Developer CV.pdf',
+    downloadUrl: '/cv/Nguyen Vo – Frontend Software Engineer.pdf', // Place your CV in public/cv/ folder
+    filename: 'Nguyen Vo – Frontend Software Engineer.pdf',
   },
 
   // Site Metadata

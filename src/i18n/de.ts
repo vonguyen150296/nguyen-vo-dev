@@ -15,6 +15,7 @@ export const de: Translation = {
       'Spezialisiert auf Performance-Optimierung, Design-Systeme und die Schaffung nahtloser Nutzererlebnisse für globale Teams',
     ctaProjects: 'Erfahrung ansehen',
     ctaCV: 'Lebenslauf herunterladen',
+    ctaCall: 'Anrufen',
   },
   video: {
     title: 'Lernen Sie den Entwickler kennen',

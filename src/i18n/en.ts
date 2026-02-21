@@ -15,6 +15,7 @@ export const en: Translation = {
       'Specialized in performance optimization, design systems, and creating seamless user experiences for global teams',
     ctaProjects: 'View Experience',
     ctaCV: 'Download CV',
+    ctaCall: 'Call me',
   },
   video: {
     title: 'Meet the Developer',
